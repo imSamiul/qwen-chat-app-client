@@ -7,6 +7,7 @@ import {
   CardTitle,
 } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
+import { useAuthMutation } from '@/services/mutations/auth-mutation';
 import { Label } from '@radix-ui/react-label';
 import { createFileRoute, Link } from '@tanstack/react-router';
 import { useState } from 'react';
@@ -17,10 +18,12 @@ export const Route = createFileRoute('/authentication/register')({
 
 function RouteComponent() {
   const [authCredentials, setAuthCredentials] = useState({
-    userName: '',
+    username: '',
     email: '',
     password: '',
   });
+  const { signupMutation } = useAuthMutation();
+  const { mutate, isSuccess } = signupMutation;
 
   function handleInputChange(e: React.ChangeEvent<HTMLInputElement>) {
     setAuthCredentials((prev) => ({
@@ -31,8 +34,15 @@ function RouteComponent() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log(authCredentials);
+    signupMutation.mutate(authCredentials, {
+      onSuccess: () => {
+        console.log('success');
+      },
+    });
   };
+  if (isSuccess) {
+    return <div>Success</div>;
+  }
 
   return (
     <div className='flex justify-center items-center h-screen bg-gray-100'>
@@ -53,8 +63,8 @@ function RouteComponent() {
                   placeholder='abc'
                   required
                   onChange={handleInputChange}
-                  value={authCredentials.userName}
-                  name='userName'
+                  value={authCredentials.username}
+                  name='username'
                   autoComplete='username'
                 />
               </div>
