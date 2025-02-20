@@ -13,9 +13,11 @@
 import { Route as rootRoute } from './routes/__root'
 import { Route as SearchUserImport } from './routes/search-user'
 import { Route as ChatRoomImport } from './routes/chat-room'
+import { Route as AuthenticationImport } from './routes/authentication'
 import { Route as IndexImport } from './routes/index'
 import { Route as AuthenticationRegisterImport } from './routes/authentication/register'
 import { Route as AuthenticationLoginImport } from './routes/authentication/login'
+import { Route as AuthenticatedChatImport } from './routes/authenticated/chat'
 
 // Create/Update Routes
 
@@ -31,6 +33,12 @@ const ChatRoomRoute = ChatRoomImport.update({
   getParentRoute: () => rootRoute,
 } as any)
 
+const AuthenticationRoute = AuthenticationImport.update({
+  id: '/authentication',
+  path: '/authentication',
+  getParentRoute: () => rootRoute,
+} as any)
+
 const IndexRoute = IndexImport.update({
   id: '/',
   path: '/',
@@ -38,14 +46,20 @@ const IndexRoute = IndexImport.update({
 } as any)
 
 const AuthenticationRegisterRoute = AuthenticationRegisterImport.update({
-  id: '/authentication/register',
-  path: '/authentication/register',
-  getParentRoute: () => rootRoute,
+  id: '/register',
+  path: '/register',
+  getParentRoute: () => AuthenticationRoute,
 } as any)
 
 const AuthenticationLoginRoute = AuthenticationLoginImport.update({
-  id: '/authentication/login',
-  path: '/authentication/login',
+  id: '/login',
+  path: '/login',
+  getParentRoute: () => AuthenticationRoute,
+} as any)
+
+const AuthenticatedChatRoute = AuthenticatedChatImport.update({
+  id: '/authenticated/chat',
+  path: '/authenticated/chat',
   getParentRoute: () => rootRoute,
 } as any)
 
@@ -58,6 +72,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexImport
+      parentRoute: typeof rootRoute
+    }
+    '/authentication': {
+      id: '/authentication'
+      path: '/authentication'
+      fullPath: '/authentication'
+      preLoaderRoute: typeof AuthenticationImport
       parentRoute: typeof rootRoute
     }
     '/chat-room': {
@@ -74,37 +95,62 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SearchUserImport
       parentRoute: typeof rootRoute
     }
+    '/authenticated/chat': {
+      id: '/authenticated/chat'
+      path: '/authenticated/chat'
+      fullPath: '/authenticated/chat'
+      preLoaderRoute: typeof AuthenticatedChatImport
+      parentRoute: typeof rootRoute
+    }
     '/authentication/login': {
       id: '/authentication/login'
-      path: '/authentication/login'
+      path: '/login'
       fullPath: '/authentication/login'
       preLoaderRoute: typeof AuthenticationLoginImport
-      parentRoute: typeof rootRoute
+      parentRoute: typeof AuthenticationImport
     }
     '/authentication/register': {
       id: '/authentication/register'
-      path: '/authentication/register'
+      path: '/register'
       fullPath: '/authentication/register'
       preLoaderRoute: typeof AuthenticationRegisterImport
-      parentRoute: typeof rootRoute
+      parentRoute: typeof AuthenticationImport
     }
   }
 }
 
 // Create and export the route tree
 
+interface AuthenticationRouteChildren {
+  AuthenticationLoginRoute: typeof AuthenticationLoginRoute
+  AuthenticationRegisterRoute: typeof AuthenticationRegisterRoute
+}
+
+const AuthenticationRouteChildren: AuthenticationRouteChildren = {
+  AuthenticationLoginRoute: AuthenticationLoginRoute,
+  AuthenticationRegisterRoute: AuthenticationRegisterRoute,
+}
+
+const AuthenticationRouteWithChildren = AuthenticationRoute._addFileChildren(
+  AuthenticationRouteChildren,
+)
+
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/authentication': typeof AuthenticationRouteWithChildren
   '/chat-room': typeof ChatRoomRoute
   '/search-user': typeof SearchUserRoute
+  '/authenticated/chat': typeof AuthenticatedChatRoute
   '/authentication/login': typeof AuthenticationLoginRoute
   '/authentication/register': typeof AuthenticationRegisterRoute
 }
 
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/authentication': typeof AuthenticationRouteWithChildren
   '/chat-room': typeof ChatRoomRoute
   '/search-user': typeof SearchUserRoute
+  '/authenticated/chat': typeof AuthenticatedChatRoute
   '/authentication/login': typeof AuthenticationLoginRoute
   '/authentication/register': typeof AuthenticationRegisterRoute
 }
@@ -112,8 +158,10 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRoute
   '/': typeof IndexRoute
+  '/authentication': typeof AuthenticationRouteWithChildren
   '/chat-room': typeof ChatRoomRoute
   '/search-user': typeof SearchUserRoute
+  '/authenticated/chat': typeof AuthenticatedChatRoute
   '/authentication/login': typeof AuthenticationLoginRoute
   '/authentication/register': typeof AuthenticationRegisterRoute
 }
@@ -122,22 +170,28 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/authentication'
     | '/chat-room'
     | '/search-user'
+    | '/authenticated/chat'
     | '/authentication/login'
     | '/authentication/register'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/authentication'
     | '/chat-room'
     | '/search-user'
+    | '/authenticated/chat'
     | '/authentication/login'
     | '/authentication/register'
   id:
     | '__root__'
     | '/'
+    | '/authentication'
     | '/chat-room'
     | '/search-user'
+    | '/authenticated/chat'
     | '/authentication/login'
     | '/authentication/register'
   fileRoutesById: FileRoutesById
@@ -145,18 +199,18 @@ export interface FileRouteTypes {
 
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AuthenticationRoute: typeof AuthenticationRouteWithChildren
   ChatRoomRoute: typeof ChatRoomRoute
   SearchUserRoute: typeof SearchUserRoute
-  AuthenticationLoginRoute: typeof AuthenticationLoginRoute
-  AuthenticationRegisterRoute: typeof AuthenticationRegisterRoute
+  AuthenticatedChatRoute: typeof AuthenticatedChatRoute
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AuthenticationRoute: AuthenticationRouteWithChildren,
   ChatRoomRoute: ChatRoomRoute,
   SearchUserRoute: SearchUserRoute,
-  AuthenticationLoginRoute: AuthenticationLoginRoute,
-  AuthenticationRegisterRoute: AuthenticationRegisterRoute,
+  AuthenticatedChatRoute: AuthenticatedChatRoute,
 }
 
 export const routeTree = rootRoute
@@ -170,14 +224,21 @@ export const routeTree = rootRoute
       "filePath": "__root.tsx",
       "children": [
         "/",
+        "/authentication",
         "/chat-room",
         "/search-user",
-        "/authentication/login",
-        "/authentication/register"
+        "/authenticated/chat"
       ]
     },
     "/": {
       "filePath": "index.tsx"
+    },
+    "/authentication": {
+      "filePath": "authentication.tsx",
+      "children": [
+        "/authentication/login",
+        "/authentication/register"
+      ]
     },
     "/chat-room": {
       "filePath": "chat-room.tsx"
@@ -185,11 +246,16 @@ export const routeTree = rootRoute
     "/search-user": {
       "filePath": "search-user.tsx"
     },
+    "/authenticated/chat": {
+      "filePath": "authenticated/chat.tsx"
+    },
     "/authentication/login": {
-      "filePath": "authentication/login.tsx"
+      "filePath": "authentication/login.tsx",
+      "parent": "/authentication"
     },
     "/authentication/register": {
-      "filePath": "authentication/register.tsx"
+      "filePath": "authentication/register.tsx",
+      "parent": "/authentication"
     }
   }
 }

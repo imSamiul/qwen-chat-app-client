@@ -7,10 +7,11 @@ import {
   CardTitle,
 } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
+import { toast } from '@/hooks/use-toast';
 import { useAuthMutation } from '@/services/mutations/auth-mutation';
 import { Label } from '@radix-ui/react-label';
-import { createFileRoute, Link } from '@tanstack/react-router';
-import { useState } from 'react';
+import { createFileRoute, Link, useNavigate } from '@tanstack/react-router';
+import { useEffect, useState } from 'react';
 
 export const Route = createFileRoute('/authentication/register')({
   component: RouteComponent,
@@ -23,7 +24,8 @@ function RouteComponent() {
     password: '',
   });
   const { signupMutation } = useAuthMutation();
-  const { mutate, isSuccess } = signupMutation;
+  const { mutate, isSuccess, isError, error } = signupMutation;
+  const navigate = useNavigate();
 
   function handleInputChange(e: React.ChangeEvent<HTMLInputElement>) {
     setAuthCredentials((prev) => ({
@@ -34,15 +36,25 @@ function RouteComponent() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    signupMutation.mutate(authCredentials, {
+    mutate(authCredentials, {
       onSuccess: () => {
-        console.log('success');
+        navigate({ to: '/authenticated/chat' });
       },
     });
   };
-  if (isSuccess) {
-    return <div>Success</div>;
-  }
+
+  useEffect(() => {
+    if (isSuccess) {
+      console.log('success');
+    }
+    if (isError) {
+      toast({
+        variant: 'destructive',
+        title: 'Uh oh! Something went wrong.',
+        description: error.message,
+      });
+    }
+  }, [isSuccess, isError, error]);
 
   return (
     <div className='flex justify-center items-center h-screen bg-gray-100'>

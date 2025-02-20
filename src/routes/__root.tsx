@@ -1,3 +1,4 @@
+import { Toaster } from '@/components/ui/toaster';
 import { AuthContextType } from '@/hooks/useAuth';
 import { QueryClient } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
@@ -18,6 +19,7 @@ function RootComponent() {
   return (
     <>
       <Outlet />
+      <Toaster />
       <ReactQueryDevtools initialIsOpen={false} />
       <TanStackRouterDevtools position='bottom-left' />
     </>

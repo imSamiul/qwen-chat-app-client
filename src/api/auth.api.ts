@@ -49,7 +49,7 @@ export const authApi = {
   },
   getUser: async (): Promise<User> => {
     try {
-      const { data } = await instance.get('/users/me');
+      const { data } = await instance.get('/auth/profile');
       return data.user;
     } catch (error) {
       throw new Error(getErrorMessage(error));

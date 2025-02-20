@@ -20,7 +20,6 @@ function RouteComponent() {
     email: '',
     password: '',
   });
-  const;
 
   function handleInputChange(e: React.ChangeEvent<HTMLInputElement>) {
     setAuthCredentials((prev) => ({
