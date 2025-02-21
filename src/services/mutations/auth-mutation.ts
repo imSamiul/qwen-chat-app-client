@@ -12,9 +12,6 @@ export function useAuthMutation() {
     onSuccess: (data) => {
       auth.saveAccessToken(data.accessToken);
     },
-    onError: (error) => {
-      console.log(error);
-    },
     onSettled: async () => {
       await queryClient.invalidateQueries({ queryKey: ['user'] });
     },

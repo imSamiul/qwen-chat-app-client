@@ -7,9 +7,10 @@ import {
   CardTitle,
 } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
+import { useAuthMutation } from '@/services/mutations/auth-mutation';
 import { Label } from '@radix-ui/react-label';
 import { createFileRoute, Link } from '@tanstack/react-router';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 export const Route = createFileRoute('/authentication/login')({
   component: RouteComponent,
@@ -20,6 +21,7 @@ function RouteComponent() {
     email: '',
     password: '',
   });
+  const { mutate, isError, error } = useAuthMutation().loginMutation;
 
   function handleInputChange(e: React.ChangeEvent<HTMLInputElement>) {
     setAuthCredentials((prev) => ({
@@ -30,8 +32,13 @@ function RouteComponent() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log(authCredentials);
+    mutate(authCredentials);
   };
+  useEffect(() => {
+    if (isError) {
+      console.log(error);
+    }
+  }, [isError, error]);
 
   return (
     <div className='flex justify-center items-center h-screen bg-gray-100'>
