@@ -2,7 +2,6 @@ import {
   Sidebar,
   SidebarContent,
   SidebarGroup,
-  SidebarGroupContent,
   SidebarGroupLabel,
   SidebarHeader,
 } from '@/components/ui/sidebar';
@@ -43,7 +42,7 @@ const chatData = generateDummyData();
 
 export function AppSidebar() {
   return (
-    <Sidebar>
+    <Sidebar c>
       <SidebarHeader className='mt-2'>
         <div className='flex items-center justify-between px-2'>
           <h1 className='font-inter text-blue-800 font-bold text-2xl'>
@@ -59,7 +58,7 @@ export function AppSidebar() {
           <SidebarGroupLabel className='my-2'>
             <p className='text-base'>All Chats</p>
           </SidebarGroupLabel>
-          <SidebarGroupContent>
+          <SidebarContent>
             {chatData.map((chat) => (
               <Link
                 key={chat.id}
@@ -104,65 +103,7 @@ export function AppSidebar() {
                 </div>
               </Link>
             ))}
-            <div className='flex items-center gap-2 hover:bg-gray-100 p-2'>
-              <NotificationBadge show={false} label='' className='bg-green-500'>
-                <Avatar className='h-12 w-12 rounded-full'>
-                  <AvatarImage
-                    src='https://github.com/shad'
-                    className='rounded-full'
-                  />
-                  <AvatarFallback className='flex items-center justify-center w-full h-full rounded-full bg-gray-200 text-lg font-medium'>
-                    cn
-                  </AvatarFallback>
-                </Avatar>
-              </NotificationBadge>
-              <div className='flex-1'>
-                <div className='flex items-center justify-between'>
-                  <h2 className='font-inter text-sm font-semibold'>
-                    Group Chat
-                  </h2>
-                  <p className='text-gray-500 text-[12px]'>8.15 AM</p>
-                </div>
-                <div className='flex items-center justify-between'>
-                  <p className='font-inter  text-[12px] font-medium text-blue-900'>
-                    <span className='text-blue-900'>User 1:</span> Hello
-                  </p>
-                  <p className='bg-blue-900 p-1 rounded text-white font-inter text-[8px] font-semibold'>
-                    4
-                  </p>
-                </div>
-              </div>
-            </div>
-            <div className='flex items-center gap-2 hover:bg-gray-100 p-2'>
-              <NotificationBadge show={false} label='' className='bg-green-500'>
-                <Avatar className='h-12 w-12 rounded-full'>
-                  <AvatarImage
-                    src='https://github.com/shad.png'
-                    className='rounded-full'
-                  />
-                  <AvatarFallback className='flex items-center justify-center w-full h-full rounded-full bg-gray-200 text-lg font-medium'>
-                    cn
-                  </AvatarFallback>
-                </Avatar>
-              </NotificationBadge>
-              <div className='flex-1'>
-                <div className='flex items-center justify-between'>
-                  <h2 className='font-inter text-sm font-semibold'>
-                    Personal Chat
-                  </h2>
-                  <p className='text-gray-500 text-[12px]'>10.10 PM</p>
-                </div>
-                <div className='flex items-center justify-between'>
-                  <p className='font-inter  text-[12px] font-medium text-blue-900'>
-                    You: Hi
-                  </p>
-                  <p className='bg-blue-900 p-1 rounded text-white font-inter text-[8px] font-semibold'>
-                    4
-                  </p>
-                </div>
-              </div>
-            </div>
-          </SidebarGroupContent>
+          </SidebarContent>
         </SidebarGroup>
       </SidebarContent>
     </Sidebar>
