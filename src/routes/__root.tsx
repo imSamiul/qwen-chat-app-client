@@ -3,7 +3,6 @@ import { AuthContextType } from '@/hooks/useAuth';
 import { QueryClient } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { Outlet, createRootRouteWithContext } from '@tanstack/react-router';
-import { TanStackRouterDevtools } from '@tanstack/router-devtools';
 import '../index.css';
 
 interface MyRouterContext {
@@ -21,7 +20,7 @@ function RootComponent() {
       <Outlet />
       <Toaster />
       <ReactQueryDevtools initialIsOpen={false} />
-      <TanStackRouterDevtools position='bottom-left' />
+      {/* <TanStackRouterDevtools position='bottom-left' /> */}
     </>
   );
 }

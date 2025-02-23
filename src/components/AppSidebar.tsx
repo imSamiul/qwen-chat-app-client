@@ -1,6 +1,7 @@
 import {
   Sidebar,
   SidebarContent,
+  SidebarFooter,
   SidebarGroup,
   SidebarGroupLabel,
   SidebarHeader,
@@ -9,6 +10,7 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from '@radix-ui/react-avatar';
 import { Link } from '@tanstack/react-router';
 import { FaRegEdit } from 'react-icons/fa';
+import { NavUser } from './Sidebar/NavUser';
 import { Button } from './ui/button';
 import { Input } from './ui/input';
 import { NotificationBadge } from './ui/notification-badge';
@@ -42,7 +44,7 @@ const chatData = generateDummyData();
 
 export function AppSidebar() {
   return (
-    <Sidebar c>
+    <Sidebar>
       <SidebarHeader className='mt-2'>
         <div className='flex items-center justify-between px-2'>
           <h1 className='font-inter text-blue-800 font-bold text-2xl'>
@@ -51,6 +53,7 @@ export function AppSidebar() {
           <FaRegEdit size={20} />
         </div>
         <Button>All</Button>
+
         <Input placeholder='Search' />
       </SidebarHeader>
       <SidebarContent>
@@ -106,6 +109,15 @@ export function AppSidebar() {
           </SidebarContent>
         </SidebarGroup>
       </SidebarContent>
+      <SidebarFooter className='bg-gray-300'>
+        <NavUser
+          user={{
+            name: 'Shad Mirza',
+            email: 'samiul@gmail.com',
+            avatar: 'https://github.com/shadcn.png',
+          }}
+        />
+      </SidebarFooter>
     </Sidebar>
   );
 }
