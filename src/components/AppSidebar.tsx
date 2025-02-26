@@ -9,7 +9,8 @@ import {
 
 import { Avatar, AvatarFallback, AvatarImage } from '@radix-ui/react-avatar';
 import { Link } from '@tanstack/react-router';
-import { FaRegEdit } from 'react-icons/fa';
+
+import { FilePlus2 } from 'lucide-react';
 import { NavUser } from './Sidebar/NavUser';
 import { Button } from './ui/button';
 import { Input } from './ui/input';
@@ -50,7 +51,7 @@ export function AppSidebar() {
           <h1 className='font-inter text-blue-800 font-bold text-2xl'>
             Qwen Chat
           </h1>
-          <FaRegEdit size={20} />
+          <FilePlus2 />
         </div>
         <Button>All</Button>
 

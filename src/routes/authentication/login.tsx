@@ -7,6 +7,7 @@ import {
   CardTitle,
 } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
+import { toast } from '@/hooks/use-toast';
 import { useAuthMutation } from '@/services/mutations/auth-mutation';
 import { Label } from '@radix-ui/react-label';
 import { createFileRoute, Link } from '@tanstack/react-router';
@@ -36,7 +37,11 @@ function RouteComponent() {
   };
   useEffect(() => {
     if (isError) {
-      console.log(error);
+      toast({
+        variant: 'destructive',
+        title: 'Uh oh! Something went wrong.',
+        description: error?.message,
+      });
     }
   }, [isError, error]);
 

@@ -1,5 +1,6 @@
 import { AuthContext } from '@/hooks/useAuth';
 import { useAuthQueries } from '@/services/queries/auth-queries';
+import { socketService } from '@/services/socket';
 import { getLocalAccessToken, saveLocalAccessToken } from '@/utils/auth';
 import { useEffect, useState } from 'react';
 
@@ -26,6 +27,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   function saveAccessToken(accessToken: string) {
     setAccessToken(accessToken);
     saveLocalAccessToken(accessToken);
+    socketService.connect(accessToken);
   }
   function clearAccessToken() {
     setAccessToken(null);
@@ -34,7 +36,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
 
   useEffect(() => {
     if (accessToken) {
-      refetch();
+      socketService.connect(accessToken); // Initial connection
+      refetch(); // Refresh user data if needed
+    } else {
+      socketService.disconnect();
     }
   }, [accessToken, refetch]);
   return (
