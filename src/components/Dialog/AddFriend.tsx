@@ -56,7 +56,7 @@ function AddFriend() {
               <LoaderIcon className='animate-spin' />
             ) : data ? (
               <SearchResult
-                username={data.user.username}
+                user={data.user}
                 avatar={data.user.avatar}
                 status={
                   data.isFriend

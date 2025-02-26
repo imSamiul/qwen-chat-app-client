@@ -42,6 +42,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     } else {
       socketService.disconnect();
     }
+    return () => {
+      socketService.disconnect();
+    };
   }, [accessToken, refetch]);
   return (
     <AuthContext.Provider value={{ ...contextValue }}>

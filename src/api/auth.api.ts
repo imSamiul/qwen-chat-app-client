@@ -41,7 +41,6 @@ export const authApi = {
   refreshToken: async (): Promise<{ accessToken: string }> => {
     try {
       const { data } = await instance.post('/auth/refresh-token');
-      console.log(data);
 
       return data;
     } catch (error) {
