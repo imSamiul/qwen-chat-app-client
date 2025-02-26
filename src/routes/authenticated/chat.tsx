@@ -1,5 +1,12 @@
 import { AppSidebar } from '@/components/AppSidebar';
-import { SidebarProvider, SidebarTrigger } from '@/components/ui/sidebar';
+import Navbar from '@/components/Navbar';
+import { Separator } from '@/components/ui/separator';
+import {
+  SidebarInset,
+  SidebarProvider,
+  SidebarTrigger,
+} from '@/components/ui/sidebar';
+
 import { createFileRoute, Outlet, redirect } from '@tanstack/react-router';
 
 export const Route = createFileRoute('/authenticated/chat')({
@@ -20,8 +27,14 @@ function RouteComponent() {
     <div>
       <SidebarProvider>
         <AppSidebar />
-        <SidebarTrigger />
-        <Outlet />
+        <SidebarInset>
+          <div className='px-2 py-4 flex justify-between '>
+            <SidebarTrigger />
+            <Navbar />
+          </div>
+          <Separator />
+          <Outlet />
+        </SidebarInset>
       </SidebarProvider>
     </div>
   );

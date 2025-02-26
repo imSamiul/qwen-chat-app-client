@@ -32,6 +32,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   function clearAccessToken() {
     setAccessToken(null);
     saveLocalAccessToken('');
+    socketService.disconnect();
   }
 
   useEffect(() => {
