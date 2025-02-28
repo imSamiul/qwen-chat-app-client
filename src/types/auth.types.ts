@@ -14,6 +14,7 @@ export type LoginCredentials = {
 export type SearchForFriend = {
   user: User;
   hasSentRequest: boolean;
+  hasReceiveRequest: boolean;
   isFriend: boolean;
 };
 export type SignupCredentials = {

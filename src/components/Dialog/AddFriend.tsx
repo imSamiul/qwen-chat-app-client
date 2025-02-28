@@ -63,6 +63,8 @@ function AddFriend() {
                     ? 'friend'
                     : data.hasSentRequest
                     ? 'requested'
+                    : data.hasReceiveRequest
+                    ? 'acceptRequest'
                     : 'none'
                 }
               />

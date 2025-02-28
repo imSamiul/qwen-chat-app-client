@@ -8,7 +8,7 @@ import { Button } from '../ui/button';
 type SearchResultProps = {
   user: User;
   avatar: string;
-  status: 'requested' | 'friend' | 'none';
+  status: 'requested' | 'friend' | 'acceptRequest' | 'none';
 };
 
 function SearchResult({ user, avatar, status }: SearchResultProps) {
@@ -39,9 +39,11 @@ function SearchResult({ user, avatar, status }: SearchResultProps) {
         {auth.user?.uniqueId === user.uniqueId ? (
           "It's You"
         ) : status === 'requested' ? (
-          <p>Request Sent</p>
+          <p>Requested</p>
         ) : status === 'friend' ? (
-          <p>Friend</p>
+          <Button variant='default'>Friend</Button>
+        ) : status === 'acceptRequest' ? (
+          <Button variant='secondary'>Accept Request</Button>
         ) : (
           <Button onClick={() => handleSendFriendRequest(user)}>
             Add Friend
