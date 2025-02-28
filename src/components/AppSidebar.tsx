@@ -10,6 +10,7 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from '@radix-ui/react-avatar';
 import { Link } from '@tanstack/react-router';
 
+import { useAuth } from '@/hooks/useAuth';
 import { FilePlus2 } from 'lucide-react';
 import { NavUser } from './Sidebar/NavUser';
 import { Button } from './ui/button';
@@ -44,6 +45,7 @@ const generateDummyData = () => {
 const chatData = generateDummyData();
 
 export function AppSidebar() {
+  const auth = useAuth();
   return (
     <Sidebar>
       <SidebarHeader className='mt-2'>
@@ -113,8 +115,8 @@ export function AppSidebar() {
       <SidebarFooter className='bg-gray-300'>
         <NavUser
           user={{
-            name: 'Shad Mirza',
-            email: 'samiul@gmail.com',
+            name: auth.user?.username ? auth.user.username : 'Anonymous',
+            email: auth.user?.email ? auth.user.email : ' ',
             avatar: 'https://github.com/shadcn.png',
           }}
         />
