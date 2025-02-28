@@ -1,8 +1,9 @@
+import { toast } from '@/hooks/use-toast';
 import { useAuth } from '@/hooks/useAuth';
-import { queryClient } from '@/main';
-import { socketService } from '@/services/socket';
+import { useSendFriendRequest } from '@/services/mutations/friend-mutation';
 import { User } from '@/types/auth.types';
 import { Avatar, AvatarFallback, AvatarImage } from '@radix-ui/react-avatar';
+import { useEffect } from 'react';
 import { Button } from '../ui/button';
 
 type SearchResultProps = {
@@ -13,16 +14,36 @@ type SearchResultProps = {
 
 function SearchResult({ user, avatar, status }: SearchResultProps) {
   const auth = useAuth();
+  const {
+    mutate: sendFriendRequest,
+    isPending,
+    error,
+    isError,
+    isSuccess,
+  } = useSendFriendRequest();
 
   async function handleSendFriendRequest(user: User) {
-    socketService.emit('sendFriendRequest', {
-      recipientId: user._id,
-      senderId: auth.user?._id,
-    });
-    await queryClient.invalidateQueries({
-      queryKey: ['searchFriend', user.uniqueId],
+    sendFriendRequest({
+      recipientId: user._id!,
     });
   }
+
+  useEffect(() => {
+    if (isError) {
+      toast({
+        variant: 'destructive',
+        title: 'Uh oh! Something went wrong.',
+        description: error?.message,
+      });
+    }
+    if (isSuccess) {
+      toast({
+        variant: 'default',
+        title: 'Friend request sent',
+        description: 'Your friend request has been sent successfully',
+      });
+    }
+  }, [isError, error, isSuccess]);
 
   return (
     <div className='flex items-center justify-between p-2 w-full bg-gray-200 rounded'>
@@ -46,7 +67,7 @@ function SearchResult({ user, avatar, status }: SearchResultProps) {
           <Button variant='secondary'>Accept Request</Button>
         ) : (
           <Button onClick={() => handleSendFriendRequest(user)}>
-            Add Friend
+            {isPending ? 'Sending...' : 'Add Friend'}
           </Button>
         )}
       </div>

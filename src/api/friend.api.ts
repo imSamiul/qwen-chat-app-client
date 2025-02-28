@@ -22,4 +22,14 @@ export const friendApi = {
       throw new Error(getErrorMessage(error));
     }
   },
+  sendFriendRequest: async (recipientId: string) => {
+    try {
+      const { data } = await instance.post('/friend/send-friend-request', {
+        recipientId,
+      });
+      return data;
+    } catch (error) {
+      throw new Error(getErrorMessage(error));
+    }
+  },
 };
