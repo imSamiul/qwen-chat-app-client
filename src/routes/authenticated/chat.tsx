@@ -11,8 +11,6 @@ import { createFileRoute, Outlet, redirect } from '@tanstack/react-router';
 
 export const Route = createFileRoute('/authenticated/chat')({
   beforeLoad: async ({ context }) => {
-    console.log(context);
-
     if (!context.auth.isAuthenticated) {
       throw redirect({
         to: '/authentication/login',

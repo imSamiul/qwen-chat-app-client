@@ -22,6 +22,10 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from '@/components/ui/sidebar';
+import { toast } from '@/hooks/use-toast';
+import { useAuthMutation } from '@/services/mutations/auth-mutation';
+import { useNavigate } from '@tanstack/react-router';
+import { useEffect } from 'react';
 import AddFriend from '../Dialog/AddFriend';
 
 export function NavUser({
@@ -29,11 +33,35 @@ export function NavUser({
 }: {
   user: {
     name: string;
-    email: string;
+    uniqueId: string;
     avatar: string;
   };
 }) {
   const { isMobile } = useSidebar();
+  const {
+    mutate: logout,
+    isSuccess,
+    isPending,
+    error,
+    isError,
+  } = useAuthMutation().logoutMutation;
+  const navigate = useNavigate();
+
+  function handleLogout() {
+    logout();
+  }
+  useEffect(() => {
+    if (isSuccess) {
+      navigate({ to: '/authentication/login' });
+    }
+    if (isError) {
+      toast({
+        variant: 'destructive',
+        title: 'Uh oh! Something went wrong.',
+        description: error?.message,
+      });
+    }
+  }, [isSuccess, isError, error, navigate]);
 
   return (
     <SidebarMenu>
@@ -50,7 +78,9 @@ export function NavUser({
               </Avatar>
               <div className='grid flex-1 text-left text-sm leading-tight'>
                 <span className='truncate font-semibold'>{user.name}</span>
-                <span className='truncate text-xs'>{user.email}</span>
+                <span className='truncate text-xs'>
+                  Unique ID: {user.uniqueId}
+                </span>
               </div>
               <ChevronsUpDown className='ml-auto size-4' />
             </SidebarMenuButton>
@@ -69,7 +99,7 @@ export function NavUser({
                 </Avatar>
                 <div className='grid flex-1 text-left text-sm leading-tight'>
                   <span className='truncate font-semibold'>{user.name}</span>
-                  <span className='truncate text-xs'>{user.email}</span>
+                  <span className='truncate text-xs'>{user.uniqueId}</span>
                 </div>
               </div>
             </DropdownMenuLabel>
@@ -91,9 +121,9 @@ export function NavUser({
               </DropdownMenuItem>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>
+            <DropdownMenuItem onClick={handleLogout}>
               <LogOut />
-              Log out
+              {isPending ? 'Logging out...' : 'Logout'}
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
