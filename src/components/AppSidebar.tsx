@@ -116,7 +116,7 @@ export function AppSidebar() {
         <NavUser
           user={{
             name: auth.user?.username ? auth.user.username : 'Anonymous',
-            uniqueId: auth.user?.uniqueId ? auth.user.uniqueId : ' ',
+            uniqueID: auth.user?.uniqueID ? auth.user.uniqueID : ' ',
             avatar: 'https://github.com/shadcn.png',
           }}
         />

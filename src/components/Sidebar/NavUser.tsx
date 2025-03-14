@@ -33,7 +33,7 @@ export function NavUser({
 }: {
   user: {
     name: string;
-    uniqueId: string;
+    uniqueID: string;
     avatar: string;
   };
 }) {
@@ -79,7 +79,7 @@ export function NavUser({
               <div className='grid flex-1 text-left text-sm leading-tight'>
                 <span className='truncate font-semibold'>{user.name}</span>
                 <span className='truncate text-xs'>
-                  Unique ID: {user.uniqueId}
+                  Unique ID: {user.uniqueID}
                 </span>
               </div>
               <ChevronsUpDown className='ml-auto size-4' />
@@ -99,7 +99,7 @@ export function NavUser({
                 </Avatar>
                 <div className='grid flex-1 text-left text-sm leading-tight'>
                   <span className='truncate font-semibold'>{user.name}</span>
-                  <span className='truncate text-xs'>{user.uniqueId}</span>
+                  <span className='truncate text-xs'>{user.uniqueID}</span>
                 </div>
               </div>
             </DropdownMenuLabel>

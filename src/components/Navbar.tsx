@@ -42,7 +42,6 @@ function Navbar() {
       minute: '2-digit',
     });
   };
-  console.log(notificationSeen);
 
   return (
     <div className='px-2 flex items-center'>

@@ -10,7 +10,7 @@ export function useAuthMutation() {
   const loginMutation = useMutation({
     mutationFn: authApi.login,
     onSuccess: (data) => {
-      auth.saveAccessToken(data.accessToken);
+      auth.saveAccessToken(data?.accessToken);
     },
     onSettled: async () => {
       await queryClient.invalidateQueries({ queryKey: ['user'] });

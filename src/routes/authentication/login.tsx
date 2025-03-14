@@ -9,32 +9,34 @@ import {
 import { Input } from '@/components/ui/input';
 import { toast } from '@/hooks/use-toast';
 import { useAuthMutation } from '@/services/mutations/auth-mutation';
+import { loginSchema, LoginSchema } from '@/types/auth.types';
+import { zodResolver } from '@hookform/resolvers/zod';
 import { Label } from '@radix-ui/react-label';
 import { createFileRoute, Link } from '@tanstack/react-router';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
+import { SubmitHandler, useForm } from 'react-hook-form';
 
 export const Route = createFileRoute('/authentication/login')({
   component: RouteComponent,
 });
 
 function RouteComponent() {
-  const [authCredentials, setAuthCredentials] = useState({
-    email: '',
-    password: '',
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+    reset,
+  } = useForm<LoginSchema>({
+    resolver: zodResolver(loginSchema),
   });
+
   const { mutate, isError, error } = useAuthMutation().loginMutation;
 
-  function handleInputChange(e: React.ChangeEvent<HTMLInputElement>) {
-    setAuthCredentials((prev) => ({
-      ...prev,
-      [e.target.name]: e.target.value,
-    }));
-  }
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    mutate(authCredentials);
+  const onSubmit: SubmitHandler<LoginSchema> = (data: LoginSchema) => {
+    mutate(data);
+    reset();
   };
+
   useEffect(() => {
     if (isError) {
       toast({
@@ -55,34 +57,51 @@ function RouteComponent() {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <form onSubmit={handleSubmit}>
+          <form onSubmit={handleSubmit(onSubmit)}>
             <div className='flex flex-col gap-6'>
               <div className='grid gap-2'>
                 <Label htmlFor='email'>Email</Label>
                 <Input
-                  id='email'
                   type='email'
-                  placeholder='m@example.com'
                   required
-                  onChange={handleInputChange}
-                  value={authCredentials.email}
-                  name='email'
+                  placeholder='m@example.com'
+                  {...register('email', {
+                    required: 'Email is required',
+                    validate: {
+                      email: (value) =>
+                        value.includes('@') || 'Email must include @',
+                    },
+                  })}
                 />
+                {errors.email?.message && (
+                  <p className='text-red-500 text-sm'>
+                    {errors.email.message as string}
+                  </p>
+                )}
               </div>
               <div className='grid gap-2'>
                 <div className='flex items-center'>
                   <Label htmlFor='password'>Password</Label>
                 </div>
                 <Input
-                  id='password'
                   type='password'
                   required
-                  onChange={handleInputChange}
-                  value={authCredentials.password}
-                  name='password'
+                  {...register('password', {
+                    required: 'Password is required',
+                    minLength: {
+                      value: 6,
+                      message: 'Password must be at least 6 characters long',
+                    },
+                  })}
+                  placeholder='Password'
                 />
+                {errors.password?.message && (
+                  <p className='text-red-500 text-sm'>
+                    {errors.password.message as string}
+                  </p>
+                )}
               </div>
-              <Button type='submit' className='w-full '>
+              <Button type='submit' className='w-full ' disabled={isSubmitting}>
                 Login
               </Button>
             </div>

@@ -1,31 +1,40 @@
 import {
   AuthResponse,
-  LoginCredentials,
-  SignupCredentials,
+  authResponseSchema,
+  LoginSchema,
+  SignUpSchema,
   User,
 } from '@/types/auth.types';
 import { getErrorMessage } from '@/utils/errorHandler';
 import { instance } from './instance.api';
 
 export const authApi = {
-  login: async (credentials: LoginCredentials) => {
+  login: async (credentials: LoginSchema): Promise<AuthResponse> => {
     try {
       const { data } = await instance.post<AuthResponse>(
         '/auth/login',
         credentials
       );
-      return data;
+      const parsedData = authResponseSchema.safeParse(data);
+      if (!parsedData.success) {
+        throw new Error(parsedData.error.errors[0].message);
+      }
+      return parsedData.data;
     } catch (error) {
       throw new Error(getErrorMessage(error));
     }
   },
-  signup: async (credentials: SignupCredentials): Promise<AuthResponse> => {
+  signup: async (credentials: SignUpSchema): Promise<AuthResponse> => {
     try {
       const { data } = await instance.post<AuthResponse>(
         '/auth/signup',
         credentials
       );
-      return data;
+      const parsedData = authResponseSchema.safeParse(data);
+      if (!parsedData.success) {
+        throw new Error(parsedData.error.errors[0].message);
+      }
+      return parsedData.data;
     } catch (error) {
       throw new Error(getErrorMessage(error));
     }
