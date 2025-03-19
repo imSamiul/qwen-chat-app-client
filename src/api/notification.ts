@@ -5,7 +5,7 @@ import {
 import { getErrorMessage } from '@/utils/errorHandler';
 import { instance } from './instance.api';
 
-export const authApi = {
+export const notificationAPI = {
   getNotification: async (): Promise<NotificationArray> => {
     try {
       const { data } = await instance.get<NotificationArray>(

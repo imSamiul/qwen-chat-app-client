@@ -1,3 +1,4 @@
+import { useGetAllNotification } from '@/services/queries/notification-queries';
 import { Bell } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { socketService } from '../services/socket';
@@ -11,23 +12,34 @@ import {
 } from './ui/dropdown-menu';
 import { NotificationBadge } from './ui/notification-badge';
 
-interface FriendRequest {
-  senderId: string;
-  senderName: string;
+interface Notification {
+  _id: string;
+  type: string;
+  sender: string;
+  recipient: string;
   createdAt: string;
+  updatedAt: string;
+  isRead: boolean;
+  __v: number;
 }
 
 function Navbar() {
-  const [notifications, setNotifications] = useState<FriendRequest[]>([]);
-  const [notificationSeen, setNotificationSeen] = useState(true);
+  const [notifications, setNotifications] = useState<Notification[]>([]);
+  const { data: notificationData } = useGetAllNotification();
+  // const { mutate: markAsRead } = useMarkNotificationRead();
+
+  useEffect(() => {
+    if (notificationData) {
+      setNotifications(notificationData);
+    }
+  }, [notificationData]);
 
   useEffect(() => {
     const socket = socketService.getSocket();
 
     if (socket) {
-      socket.on('newFriendRequest', (data: FriendRequest) => {
+      socket.on('newFriendRequest', (data: Notification) => {
         setNotifications((prev) => [data, ...prev]);
-        setNotificationSeen(false);
       });
     }
 
@@ -36,6 +48,15 @@ function Navbar() {
     };
   }, []);
 
+  const handleNotificationClick = () => {
+    const unreadNotifications = notifications
+      .filter((n) => !n.isRead)
+      .map((n) => n._id);
+    if (unreadNotifications.length > 0) {
+      // markAsRead(unreadNotifications);
+    }
+  };
+
   const formatTime = (dateString: string) => {
     return new Date(dateString).toLocaleTimeString([], {
       hour: '2-digit',
@@ -43,14 +64,16 @@ function Navbar() {
     });
   };
 
+  const hasUnreadNotifications = notifications.some((n) => !n.isRead);
+
   return (
     <div className='px-2 flex items-center'>
       <DropdownMenu>
-        <DropdownMenuTrigger onPointerDown={() => setNotificationSeen(true)}>
+        <DropdownMenuTrigger onClick={handleNotificationClick}>
           <NotificationBadge
             label={
-              notifications.length > 0 && !notificationSeen
-                ? String(notifications.length)
+              hasUnreadNotifications
+                ? String(notifications.filter((n) => !n.isRead).length)
                 : undefined
             }
             className='bg-green-500'
@@ -63,23 +86,28 @@ function Navbar() {
           </NotificationBadge>
         </DropdownMenuTrigger>
         <DropdownMenuContent className='mx-2 w-72'>
-          <DropdownMenuLabel>Notifications</DropdownMenuLabel>
+          <DropdownMenuLabel className='flex justify-between'>
+            Notifications
+          </DropdownMenuLabel>
+
           <DropdownMenuSeparator />
           {notifications.length === 0 ? (
             <DropdownMenuItem className='text-gray-500'>
               No new notifications
             </DropdownMenuItem>
           ) : (
-            notifications.map((request, index) => (
+            notifications.map((notification) => (
               <DropdownMenuItem
-                key={index}
+                key={notification._id}
                 className='flex flex-col items-start py-2'
               >
                 <span className='font-medium'>
-                  {request.senderName} sent you a friend request
+                  {notification.type === 'friend_request'
+                    ? 'You received a friend request'
+                    : 'New notification'}
                 </span>
                 <span className='text-xs text-gray-500'>
-                  {formatTime(request.createdAt)}
+                  {formatTime(notification.createdAt)}
                 </span>
               </DropdownMenuItem>
             ))
